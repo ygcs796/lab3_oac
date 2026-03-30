@@ -1,4 +1,4 @@
-module locker (
+module safecrack (
     input   logic       clk,
     input   logic       rst_n,
     input   logic [3:0] btn_geral,
@@ -48,7 +48,7 @@ button_fsm button4 (
         .btn_rise  (btn_4_ativo)
     );
 
-// para guardar a memória dos estados anteriores 
+// para guardar a mem�ria dos estados anteriores 
 always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) 
         actState <= INIT;
@@ -83,7 +83,7 @@ unique case (actState)
 
     BTN2:
 
-    if (btn_atual == 4'b0100) nextState = BTN3;
+    if (btn_atual == 4'b0010) nextState = BTN3;
     else if (btn_atual != 4'b0000) nextState = INIT;
 
     BTN3:
