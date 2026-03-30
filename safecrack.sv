@@ -1,7 +1,7 @@
 module locker (
     input   logic       clk,
     input   logic       rst_n,
-    input   logic [3:0] btn,
+    input   logic [3:0] btn_geral,
     output  logic       open
 );
 
@@ -14,75 +14,76 @@ typedef enum logic [5:0] {
     UNLOCK = 6'b100000
 } state;
 
-state actState = 1;
-state nextState = 1;
+state actState = INIT;
+state nextState = INIT;
 
-logic btn_1, btn_2, btn_3, btn_4;
+logic btn_1_ativo, btn_2_ativo, btn_3_ativo, btn_4_ativo;
+logic [3:0] btn_atual = 0;
 
 button_fsm button1 (
         .clk   (clk),
         .rst_n (rst_n),
-        .btn   (btn[0]),
-        .leds  (btn_1)
+        .btn   (btn_geral[0]),
+        .btn_rise  (btn_1_ativo)
     );
 
 button_fsm button2 (
         .clk   (clk),
         .rst_n (rst_n),
-        .btn   (btn[1]),
-        .leds  (btn_2)
+        .btn   (btn_geral[1]),
+        .btn_rise (btn_2_ativo)
     );
 
 button_fsm button3 (
         .clk   (clk),
         .rst_n (rst_n),
-        .btn   (btn[2]),
-        .leds  (btn_3)
+        .btn   (btn_geral[2]),
+        .btn_rise (btn_3_ativo)
     );
 
 button_fsm button4 (
         .clk   (clk),
         .rst_n (rst_n),
-        .btn   (btn[3]),
-        .leds  (btn_4)
+        .btn   (btn_geral[3]),
+        .btn_rise  (btn_4_ativo)
     );
-
-logic [3:0] btn = {btn4, btn3, btn2, btn1};
 
 always_comb begin
 
-next_state = state;  
+btn_atual = {btn_4_ativo, btn_3_ativo, btn_2_ativo, btn_1_ativo};
 
-unique case (state)
+nextState = actState;  
+
+unique case (actState)
 
     INIT: 
 
-    if (btn = 4'b0001) next_state: BTN1;
-    else next_state = INIT;
+    if (btn_atual == 4'b0001) nextState = BTN1;
+    else nextState = INIT;
 
     BTN1: 
 
-    if (btn = 4'b0010) next_state: BTN2;
-    else next_state = INIT;
+    if (btn_atual == 4'b0010) nextState = BTN2;
+    else nextState = INIT;
 
     BTN2:
 
-    if (btn = 4'b0100) next_state: BTN3;
-    else next_state = INIT;
+    if (btn_atual == 4'b0100) nextState = BTN3;
+    else nextState = INIT;
 
     BTN3:
 
-    if (btn = 4'b1000) next_state: BTN4;
-    else next_state = INIT;
+    if (btn_atual == 4'b1000) nextState = BTN4;
+    else nextState = INIT;
 
     BTN4:
 
-    next_state: UNLOCK;
+    nextState = UNLOCK;
 
     UNLOCK:
 
-    if(rst_n) next_state: INIT
-    else next_state: UNLOCK
+    if(rst_n) nextState = INIT;
+    else nextState = UNLOCK;
     
 endcase
 
