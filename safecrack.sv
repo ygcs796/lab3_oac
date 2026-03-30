@@ -48,42 +48,60 @@ button_fsm button4 (
         .btn_rise  (btn_4_ativo)
     );
 
+// para guardar a memória dos estados anteriores 
+always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) 
+        actState <= INIT;
+    else 
+        actState <= nextState;
+end
+
+// para definir quando deve ocorrer as trocas de estado
 always_comb begin
 
 btn_atual = {btn_4_ativo, btn_3_ativo, btn_2_ativo, btn_1_ativo};
 
 nextState = actState;  
 
+open = 0;
+
 unique case (actState)
 
     INIT: 
 
-    if (btn_atual == 4'b0001) nextState = BTN1;
+    if (btn_atual == 4'b0001) begin
+	nextState = BTN1;
+	open = 0;
+	end
+
     else nextState = INIT;
 
     BTN1: 
 
-    if (btn_atual == 4'b0010) nextState = BTN2;
-    else nextState = INIT;
+    if(btn_atual == 4'b0010) nextState = BTN2; 
+    else if (btn_atual != 4'b0000) nextState = INIT;
 
     BTN2:
 
     if (btn_atual == 4'b0100) nextState = BTN3;
-    else nextState = INIT;
+    else if (btn_atual != 4'b0000) nextState = INIT;
 
     BTN3:
 
     if (btn_atual == 4'b1000) nextState = BTN4;
-    else nextState = INIT;
+    else if (btn_atual != 4'b0000) nextState = INIT;
 
     BTN4:
 
     nextState = UNLOCK;
 
-    UNLOCK:
+    UNLOCK: begin
 
-    if(rst_n) nextState = INIT;
-    else nextState = UNLOCK;
+	nextState = UNLOCK;
+	open = 1;
+
+	end
+
     
 endcase
 
