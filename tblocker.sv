@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps // setando o tempo e a precisão
+`timescale 1ns / 1ps // setando o tempo e a precisao
 
 module tb_locker;
 
@@ -41,7 +41,7 @@ module tb_locker;
 
         press_btn(4'b0001); 
         press_btn(4'b0010); 
-        press_btn(4'b0100); 
+        press_btn(4'b0010); 
         press_btn(4'b1000); 
 
         // Verifica se abriu
@@ -71,13 +71,13 @@ module tb_locker;
         $monitor("\n--- Teste 3: Botao Errado no Meio da Sequencia ---");
         press_btn(4'b0001); // aperta o correto
         
-        press_btn(4'b0100); // aperta um botao depois do que deveria
+        press_btn(4'b1000); // aperta um botao depois do que deveria
         
         // é pra maquina voltar a init
         #10;
         $monitor("\nFechadura pos-erro: open = %b", open);
 
-        // acabando a simulação
+        // acabando a simulacao
         #50;
         $monitor("\n--------------------------------------");
         $finish;
