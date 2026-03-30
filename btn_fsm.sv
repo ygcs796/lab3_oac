@@ -6,8 +6,7 @@ module button_fsm (
 );
 
 logic btn_active; 
-logic btn_prev;  
-logic btn_rise;    
+logic btn_prev;    
 
 assign btn_active = ~btn;
 assign btn_rise   = btn_active & ~btn_prev;  
