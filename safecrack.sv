@@ -48,7 +48,7 @@ button_fsm button4 (
         .btn_rise  (btn_4_ativo)
     );
 
-// para guardar a mem�ria dos estados anteriores 
+// para guardar a memoria dos estados anteriores 
 always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) 
         actState <= INIT;
